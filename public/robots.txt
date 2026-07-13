@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yashawachar.dev/sitemap.xml

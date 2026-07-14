@@ -16,7 +16,8 @@ export default function Header() {
 
   return (
     <header className="w-full max-w-6xl mx-auto flex items-center justify-between px-6 py-4 bg-white/80 backdrop-blur-3xl border border-white/80 rounded-full shadow-lg shadow-slate-200/40 relative z-20">
-      <Link to="/" className="text-xl font-extrabold tracking-tight text-slate-900">
+      <Link to="/" className="flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-slate-900">
+        <img src="/img/avatar-hex.png" alt="" className="w-8 h-8 object-contain" aria-hidden="true" />
         Yash Awachar
       </Link>
 

@@ -152,6 +152,17 @@ export default function Connect() {
         </GlassCard>
 
         <div className="space-y-6">
+          <GlassCard className="p-8 flex flex-col items-center text-center gap-4 shadow-lg shadow-slate-200/40">
+            <div className="relative w-32 h-44">
+              <div className="absolute inset-0 bg-gradient-to-tr from-pink-300 via-purple-300 to-sky-300 opacity-40 blur-xl rounded-full" />
+              <img src="/img/avatar-hex.png" alt="Yash Awachar" className="relative w-full h-full object-contain drop-shadow-xl" />
+            </div>
+            <div>
+              <p className="font-extrabold text-slate-900">Yash Awachar</p>
+              <p className="text-xs text-slate-400">Based in Degaon, Maharashtra</p>
+            </div>
+          </GlassCard>
+
           <GlassCard className="p-8 space-y-4 shadow-lg shadow-slate-200/40">
             <Eyebrow>Availability</Eyebrow>
             <p className="text-sm text-slate-600 leading-relaxed">

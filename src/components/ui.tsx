@@ -66,7 +66,28 @@ export function Eyebrow({ children }: { children: ReactNode }) {
   )
 }
 
-export function PageHero({
+export function LegalDocument({ children }: { children: ReactNode }) {
+  return (
+    <GlassCard className="px-6 md:px-16 py-12 md:py-16">
+      <div className="max-w-none space-y-8">{children}</div>
+    </GlassCard>
+  )
+}
+
+export function LegalSection({ n, title, children }: { n: number | string; title: string; children: ReactNode }) {
+  return (
+    <section className="space-y-3">
+      <h2 className="text-lg font-extrabold text-slate-900">
+        {n}. {title}
+      </h2>
+      <div className="space-y-3 text-sm text-slate-600 leading-relaxed">{children}</div>
+    </section>
+  )
+}
+
+export function LegalList({ children }: { children: ReactNode }) {
+  return <ul className="list-disc pl-5 space-y-1.5 text-sm text-slate-600 leading-relaxed">{children}</ul>
+}
   eyebrow,
   title,
   subtitle,

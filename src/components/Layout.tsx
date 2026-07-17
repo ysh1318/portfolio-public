@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Lenis from 'lenis'
 import Header from './Header'
@@ -6,13 +6,14 @@ import Footer from './Footer'
 import AvailabilityBanner from './AvailabilityBanner'
 import ScrollToTop from './ScrollToTop'
 import LoopMedia from './LoopMedia'
-import Chatbot from './Chatbot'
 import VirtualCursor from './VirtualCursor'
 import { MEDIA } from '../lib/media'
 
-// Wraps every route (spec §3: Global Elements). Individual pages render
-// into <Outlet /> and are responsible for their own <section> wrappers.
+const Chatbot = lazy(() => import('./Chatbot'))
+
 export default function Layout() {
+  const [chatbotRequested, setChatbotRequested] = useState(false)
+
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
@@ -23,13 +24,12 @@ export default function Layout() {
     })
 
     let rafId: number
-    function raf(time: number) {
+    const raf = (time: number) => {
       lenis.raf(time)
       rafId = requestAnimationFrame(raf)
     }
 
     rafId = requestAnimationFrame(raf)
-
     return () => {
       cancelAnimationFrame(rafId)
       lenis.destroy()
@@ -53,7 +53,20 @@ export default function Layout() {
       </main>
       <Footer />
       <ScrollToTop />
-      <Chatbot />
+      {chatbotRequested ? (
+        <Suspense fallback={null}>
+          <Chatbot />
+        </Suspense>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setChatbotRequested(true)}
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-tr from-indigo-500 via-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-xl hover:scale-105 active:scale-95 transition-all duration-300 border border-white/20"
+          aria-label="Open assistant"
+        >
+          <span className="text-xl">✦</span>
+        </button>
+      )}
       <VirtualCursor />
     </div>
   )

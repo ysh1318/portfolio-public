@@ -1,34 +1,20 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, type SyntheticEvent } from 'react'
 import type { MediaSlot } from '../lib/media'
 
 interface LoopMediaProps {
   slot: MediaSlot
-  /** Tailwind aspect-ratio class; defaults to the slot's own ratio. */
   aspect?: string
-  /** 0–1. Matches the opacity called for in the design spec. */
   opacity?: number
-  /** Only play on hover (used for project-card cover loops). */
   hoverPlay?: boolean
   rounded?: string
   className?: string
-  /** Custom loop start time in seconds (for programmatic trimming). */
   startTime?: number
-  /** Custom loop end time in seconds (for programmatic trimming). */
   endTime?: number
-  /** Crossfade duration in seconds between loop transitions. */
   crossfadeDuration?: number
-  /** CSS/Tailwind class for video alignment, e.g., 'object-bottom'. Defaults to 'object-center'. */
   objectPosition?: string
-  /** object-fit CSS property; defaults to 'cover'. */
   objectFit?: 'cover' | 'contain'
 }
 
-/**
- * Renders a looping decorative video for a given media slot.
- * Supports standard looping, startTime/endTime trimming, and smooth crossfaded loops.
- */
-// Set this to true to stop all video playback and CPU/GPU utilization during development.
-// Set back to false to enable production video loops.
 const DISABLE_VIDEOS_FOR_DEV = false
 
 export default function LoopMedia({
@@ -46,22 +32,45 @@ export default function LoopMedia({
 }: LoopMediaProps) {
   const [videoFailed, setVideoFailed] = useState(DISABLE_VIDEOS_FOR_DEV)
   const [imageFailed, setImageFailed] = useState(false)
-  const ratio = aspect ?? slot.aspect
-
-  // Crossfade state
+  const [shouldLoad, setShouldLoad] = useState(false)
   const [activeVideo, setActiveVideo] = useState<'A' | 'B'>('A')
+  const [duration, setDuration] = useState(0)
+  const [fadeTriggered, setFadeTriggered] = useState(false)
+  const [playlistIndex, setPlaylistIndex] = useState(0)
+  const mediaContainerRef = useRef<HTMLDivElement>(null)
   const videoRefA = useRef<HTMLVideoElement>(null)
   const videoRefB = useRef<HTMLVideoElement>(null)
-  const [duration, setDuration] = useState<number>(0)
-  const [fadeTriggered, setFadeTriggered] = useState(false)
-
-  // Playlist support
+  const ratio = aspect ?? slot.aspect
   const playlist = slot.path.split('|')
-  const [playlistIndex, setPlaylistIndex] = useState(0)
+  const isImage = /\.(png|jpe?g|webp|gif|avif)$/i.test(playlist[0])
 
-  // Reset error/crossfade states whenever the slot path changes
+  // Do not request decorative video bytes until the media is close to view.
+  // This prevents below-the-fold loops from competing with the page's first render.
   useEffect(() => {
-    if (DISABLE_VIDEOS_FOR_DEV) return // keep videos disabled
+    if (isImage || DISABLE_VIDEOS_FOR_DEV) return
+
+    const container = mediaContainerRef.current
+    if (!container || !('IntersectionObserver' in window)) {
+      setShouldLoad(true)
+      return
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShouldLoad(true)
+          observer.disconnect()
+        }
+      },
+      { rootMargin: '300px 0px' },
+    )
+
+    observer.observe(container)
+    return () => observer.disconnect()
+  }, [isImage, slot.path])
+
+  useEffect(() => {
+    if (DISABLE_VIDEOS_FOR_DEV) return
     setVideoFailed(false)
     setImageFailed(false)
     setActiveVideo('A')
@@ -70,83 +79,59 @@ export default function LoopMedia({
     setPlaylistIndex(0)
   }, [slot.path])
 
-  // Single-video trim initial seek
   useEffect(() => {
     if (crossfadeDuration && crossfadeDuration > 0) return
     const video = videoRefA.current
-    if (!video || videoFailed || imageFailed) return
+    if (!video || videoFailed || imageFailed || !shouldLoad) return
 
-    const handleLoadedMetadata = () => {
-      if (startTime > 0 && video.currentTime < startTime) {
-        video.currentTime = startTime
-      }
+    const seekToStart = () => {
+      if (startTime > 0 && video.currentTime < startTime) video.currentTime = startTime
     }
 
-    video.addEventListener('loadedmetadata', handleLoadedMetadata)
-    if (video.readyState >= 1 && startTime > 0 && video.currentTime < startTime) {
-      video.currentTime = startTime
-    }
+    video.addEventListener('loadedmetadata', seekToStart)
+    if (video.readyState >= 1) seekToStart()
+    return () => video.removeEventListener('loadedmetadata', seekToStart)
+  }, [slot.path, startTime, crossfadeDuration, videoFailed, imageFailed, shouldLoad])
 
-    return () => {
-      video.removeEventListener('loadedmetadata', handleLoadedMetadata)
-    }
-  }, [slot.path, startTime, crossfadeDuration, videoFailed, imageFailed])
-
-  const onLoadedMetadata = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    setDuration(e.currentTarget.duration)
+  const onLoadedMetadata = (event: SyntheticEvent<HTMLVideoElement>) => {
+    setDuration(event.currentTarget.duration)
   }
 
-  // Crossfade transition timeupdate check
-  const handleTimeUpdateCrossfade = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    const video = e.currentTarget
-    if (!duration || !crossfadeDuration || videoFailed || imageFailed) return
+  const handleTimeUpdateCrossfade = (event: SyntheticEvent<HTMLVideoElement>) => {
+    const video = event.currentTarget
+    if (!duration || !crossfadeDuration || videoFailed || imageFailed || fadeTriggered) return
 
-    const triggerTime = duration - crossfadeDuration
-    if (video.currentTime >= triggerTime && !fadeTriggered) {
+    if (video.currentTime >= duration - crossfadeDuration) {
       setFadeTriggered(true)
-
       const targetVideoRef = activeVideo === 'A' ? videoRefB : videoRefA
       const currentVideoRef = activeVideo === 'A' ? videoRefA : videoRefB
       const nextActive = activeVideo === 'A' ? 'B' : 'A'
-
       const nextVideo = targetVideoRef.current
-      if (nextVideo) {
-        nextVideo.currentTime = startTime
-        nextVideo.play().then(() => {
-          setActiveVideo(nextActive)
-          setTimeout(() => {
-            const prevVideo = currentVideoRef.current
-            if (prevVideo) {
-              prevVideo.pause()
-              prevVideo.currentTime = startTime
-            }
-            setFadeTriggered(false)
-          }, crossfadeDuration * 1000)
-        }).catch(() => {
+
+      if (!nextVideo) return
+      nextVideo.currentTime = startTime
+      nextVideo.play().then(() => {
+        setActiveVideo(nextActive)
+        window.setTimeout(() => {
+          const previousVideo = currentVideoRef.current
+          if (previousVideo) {
+            previousVideo.pause()
+            previousVideo.currentTime = startTime
+          }
           setFadeTriggered(false)
-        })
-      }
+        }, crossfadeDuration * 1000)
+      }).catch(() => setFadeTriggered(false))
     }
   }
 
-  // Single-video trim timeupdate check
-  const handleTimeUpdateSingle = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    const video = e.currentTarget
+  const handleTimeUpdateSingle = (event: SyntheticEvent<HTMLVideoElement>) => {
+    const video = event.currentTarget
     if (endTime && video.currentTime >= endTime) {
       video.currentTime = startTime
       video.play().catch(() => {})
     }
   }
 
-  const handlePlaySingle = (e: React.SyntheticEvent<HTMLVideoElement>) => {
-    const video = e.currentTarget
-    if (startTime > 0 && video.currentTime < startTime) {
-      video.currentTime = startTime
-    }
-  }
-
-  // If the slot is already an image format, render directly — skip all video logic
-  const isImage = /\.(png|jpe?g|webp|gif|avif)$/i.test(playlist[0])
   if (isImage) {
     return (
       <img
@@ -155,18 +140,21 @@ export default function LoopMedia({
         className={`${ratio} ${rounded} ${className} object-${objectFit} ${objectPosition}`}
         style={{ opacity }}
         src={playlist[0]}
+        loading="lazy"
+        decoding="async"
       />
     )
   }
-  // Fallback image path for regular video slots
+
   const imagePath = playlist[playlistIndex].replace(/\.mp4$/, '.webp')
+  const frameClassName = `${ratio} ${rounded} ${className}`
+  const videoClassName = `w-full h-full object-${objectFit} ${objectPosition}`
 
   if (videoFailed && imageFailed) {
-    const isAbsoluteOrFixed = className.includes('absolute') || className.includes('fixed')
     return (
       <div
         aria-hidden="true"
-        className={`media-placeholder ${ratio} ${rounded} ${className} ${isAbsoluteOrFixed ? '' : 'relative'} overflow-hidden flex items-center justify-center`}
+        className={`media-placeholder ${frameClassName} overflow-hidden flex items-center justify-center`}
         style={{ opacity }}
       >
         <span className="text-[9px] font-bold uppercase tracking-wider text-white/90 px-3 text-center leading-relaxed drop-shadow">
@@ -184,85 +172,75 @@ export default function LoopMedia({
         className={`${ratio} ${rounded} ${className} object-${objectFit} ${objectPosition}`}
         style={{ opacity }}
         src={imagePath}
+        loading="lazy"
+        decoding="async"
         onError={() => setImageFailed(true)}
       />
     )
   }
 
-
-  // RENDER DUAL CROSSFADE VIDEO IF PROP IS ACTIVE
   if (crossfadeDuration && crossfadeDuration > 0) {
-    const isAbsoluteOrFixed = className.includes('absolute') || className.includes('fixed')
     return (
-      <div
-        aria-hidden="true"
-        className={`${ratio} ${rounded} ${className} ${isAbsoluteOrFixed ? '' : 'relative'} overflow-hidden`}
-        style={{ opacity }}
-      >
-        <video
-          ref={videoRefA}
-          aria-hidden="true"
-          tabIndex={-1}
-          className={`absolute inset-0 w-full h-full object-${objectFit} transition-opacity ease-in-out ${objectPosition}`}
-          style={{
-            opacity: activeVideo === 'A' ? 1 : 0,
-            transitionDuration: `${crossfadeDuration * 1000}ms`,
-          }}
-          src={slot.path}
-          autoPlay={activeVideo === 'A' && !hoverPlay}
-          muted
-          playsInline
-          onLoadedMetadata={onLoadedMetadata}
-          onTimeUpdate={activeVideo === 'A' ? handleTimeUpdateCrossfade : undefined}
-          onError={() => setVideoFailed(true)}
-        />
-        <video
-          ref={videoRefB}
-          aria-hidden="true"
-          tabIndex={-1}
-          className={`absolute inset-0 w-full h-full object-${objectFit} transition-opacity ease-in-out ${objectPosition}`}
-          style={{
-            opacity: activeVideo === 'B' ? 1 : 0,
-            transitionDuration: `${crossfadeDuration * 1000}ms`,
-          }}
-          src={slot.path}
-          autoPlay={activeVideo === 'B' && !hoverPlay}
-          muted
-          playsInline
-          onLoadedMetadata={onLoadedMetadata}
-          onTimeUpdate={activeVideo === 'B' ? handleTimeUpdateCrossfade : undefined}
-          onError={() => setVideoFailed(true)}
-        />
+      <div ref={mediaContainerRef} aria-hidden="true" className={`${frameClassName} overflow-hidden`} style={{ opacity }}>
+        {shouldLoad && (
+          <>
+            <video
+              ref={videoRefA}
+              tabIndex={-1}
+              className={`absolute inset-0 ${videoClassName} transition-opacity ease-in-out`}
+              style={{ opacity: activeVideo === 'A' ? 1 : 0, transitionDuration: `${crossfadeDuration * 1000}ms` }}
+              src={slot.path}
+              autoPlay={activeVideo === 'A' && !hoverPlay}
+              preload="none"
+              muted
+              playsInline
+              onLoadedMetadata={onLoadedMetadata}
+              onTimeUpdate={activeVideo === 'A' ? handleTimeUpdateCrossfade : undefined}
+              onError={() => setVideoFailed(true)}
+            />
+            <video
+              ref={videoRefB}
+              tabIndex={-1}
+              className={`absolute inset-0 ${videoClassName} transition-opacity ease-in-out`}
+              style={{ opacity: activeVideo === 'B' ? 1 : 0, transitionDuration: `${crossfadeDuration * 1000}ms` }}
+              src={slot.path}
+              autoPlay={activeVideo === 'B' && !hoverPlay}
+              preload="none"
+              muted
+              playsInline
+              onLoadedMetadata={onLoadedMetadata}
+              onTimeUpdate={activeVideo === 'B' ? handleTimeUpdateCrossfade : undefined}
+              onError={() => setVideoFailed(true)}
+            />
+          </>
+        )}
       </div>
     )
   }
 
-  const handleEnded = () => {
-    setPlaylistIndex((prev) => (prev + 1) % playlist.length)
-  }
-
-  // RENDER STANDARD VIDEO (OR SINGLE-TRIM VIDEO)
   return (
-    <video
-      ref={videoRefA}
-      aria-hidden="true"
-      tabIndex={-1}
-      className={`${ratio} ${rounded} ${className} object-${objectFit} ${objectPosition}`.trim()}
-      style={{ opacity }}
-      src={playlist[playlistIndex]}
-      autoPlay={!hoverPlay}
-      loop={playlist.length === 1 && !endTime && !hoverPlay}
-      muted
-      playsInline
-      onMouseEnter={(e) => hoverPlay && e.currentTarget.play()}
-      onMouseLeave={(e) => hoverPlay && e.currentTarget.pause()}
-      onTimeUpdate={handleTimeUpdateSingle}
-      onPlay={handlePlaySingle}
-      onEnded={playlist.length > 1 ? handleEnded : undefined}
-      onError={() => setVideoFailed(true)}
-    />
+    <div ref={mediaContainerRef} aria-hidden="true" className={frameClassName} style={{ opacity }}>
+      {shouldLoad && (
+        <video
+          ref={videoRefA}
+          tabIndex={-1}
+          className={videoClassName}
+          src={playlist[playlistIndex]}
+          autoPlay={!hoverPlay}
+          preload="none"
+          loop={playlist.length === 1 && !endTime && !hoverPlay}
+          muted
+          playsInline
+          onMouseEnter={(event) => hoverPlay && event.currentTarget.play()}
+          onMouseLeave={(event) => hoverPlay && event.currentTarget.pause()}
+          onTimeUpdate={handleTimeUpdateSingle}
+          onPlay={(event) => {
+            if (startTime > 0 && event.currentTarget.currentTime < startTime) event.currentTarget.currentTime = startTime
+          }}
+          onEnded={playlist.length > 1 ? () => setPlaylistIndex((previous) => (previous + 1) % playlist.length) : undefined}
+          onError={() => setVideoFailed(true)}
+        />
+      )}
+    </div>
   )
 }
-
-
-

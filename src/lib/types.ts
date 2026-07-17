@@ -31,6 +31,7 @@ export interface Project {
 
 export interface Lead {
   name: string
+  email?: string
   business: string
   projectType: string
   subject: string
@@ -38,6 +39,7 @@ export interface Lead {
   sourcePage: string
   status: string
   notes: string
+  source?: 'form' | 'chat'
   createdAt: unknown
 }
 

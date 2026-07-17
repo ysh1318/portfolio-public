@@ -36,7 +36,7 @@ const siteContent = {
   heroSubtext:
     "I'm a self-taught, independent builder who ships fast — designing, building, and deploying production-ready applications end-to-end, solo.",
   servicesIntro:
-    'From business websites to exam-ready CBT engines to the tools that run your day-to-day — built and deployed end-to-end.',
+    'From business websites to the custom software and tools that run your day-to-day — built and deployed end-to-end.',
   industriesIntro:
     'A look at the kinds of businesses I build for, and the specific problems I solve for each.',
   processIntro: 'How an engagement goes from first message to a live, working product.',

@@ -1,10 +1,12 @@
 import { GlassCard, PageHero, PrimaryButton, Eyebrow } from '../components/ui'
 import { useMeta } from '../hooks/useMeta'
+import LoopMedia from '../components/LoopMedia'
+import { MEDIA } from '../lib/media'
 
 const FAQS = [
   {
     q: 'How much does this cost?',
-    a: 'It depends on what you need — a simple website is a one-time cost, while a test engine or tracking tool is usually a small monthly fee tied to how many students/customers you have. See the Pricing page for ranges, or just ask directly and I\'ll quote based on your actual size.',
+    a: 'It depends on what you need — a simple website is a one-time cost, while a test engine or tracking tool is usually a small monthly fee tied to how many students/customers you have. Reach out directly for ranges, and I\'ll quote based on your actual size.',
   },
   {
     q: 'What if I don\'t like the result?',
@@ -37,19 +39,33 @@ export default function FAQ() {
 
   return (
     <>
-      <PageHero eyebrow="FAQ" title="Common questions" subtitle="If something isn't covered here, just ask directly." />
+      <LoopMedia
+        slot={MEDIA.faqPageBg}
+        aspect="aspect-auto"
+        className="fixed inset-0 w-full h-full -z-10 pointer-events-none"
+        rounded="rounded-none"
+        opacity={0.08}
+      />
+      <PageHero
+        id="faq-hero"
+        eyebrow="FAQ"
+        title="Common questions"
+        subtitle="If something isn't covered here, just ask directly."
+        mediaSlot={MEDIA.faqHeroBg}
+        mediaObjectPosition="object-bottom"
+      />
 
-      <div className="space-y-4">
-        {FAQS.map((item) => (
-          <GlassCard key={item.q} className="p-7 space-y-2 shadow-lg shadow-slate-200/40">
+      <div id="faq-list" className="space-y-4">
+        {FAQS.map((item, i) => (
+          <GlassCard key={item.q} id={`faq-item-${i}`} className="p-7 space-y-2 shadow-lg shadow-slate-200/40">
             <Eyebrow>{item.q}</Eyebrow>
-            <p className="text-sm text-slate-600 leading-relaxed">{item.a}</p>
+            <p className="text-sm text-slate-700 leading-relaxed">{item.a}</p>
           </GlassCard>
         ))}
       </div>
 
       <div className="text-center">
-        <PrimaryButton to="/connect">Still have a question? Ask here</PrimaryButton>
+        <PrimaryButton id="faq-connect-btn" to="/connect">Still have a question? Ask here</PrimaryButton>
       </div>
     </>
   )

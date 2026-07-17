@@ -49,7 +49,7 @@ export default function Terms() {
 
         <LegalSection n={4} title="Fees & Payment Terms">
           <LegalList>
-            <li>Pricing is quoted per engagement based on scope; published ranges (see the Pricing page) are indicative, not binding quotes</li>
+            <li>Pricing is quoted per engagement based on scope; any discussed or published ranges are indicative, not binding quotes</li>
             <li>Recurring/subscription-style services (such as a per-student monthly test-engine fee) are billed on the schedule agreed at the start of the engagement</li>
             <li>Payment is due as specified in the individual quote or Service Agreement; continued access to a Product may be paused if payment is significantly overdue, with reasonable notice given first</li>
           </LegalList>

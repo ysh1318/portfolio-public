@@ -24,6 +24,12 @@ export interface IndustryData {
   navLabel: string
   title: string
   tagline: string
+  // Single emoji used as the visual identity for this industry across
+  // the Home teasers, the /industries grid, and the industry page hero.
+  icon: string
+  // Fixed `from-x to-y` Tailwind gradient tied to this industry specifically,
+  // so the color means something instead of rotating by array position.
+  accentGradient: string
   problem: string[]
   build: string[]
   process: string[]
@@ -35,6 +41,8 @@ export const INDUSTRIES: IndustryData[] = [
   {
     slug: 'coaching',
     navLabel: 'Coaching Institutes',
+    icon: '🎓',
+    accentGradient: 'from-purple-400 to-sky-400',
     title: 'JEE / NEET / MHT-CET Coaching Institutes',
     tagline: 'Run tests like the real exam, and keep parents in the loop without lifting a finger.',
     problem: [
@@ -73,7 +81,9 @@ export const INDUSTRIES: IndustryData[] = [
   },
   {
     slug: 'restaurants',
-    navLabel: 'Restaurants',
+    navLabel: 'Restaurants & Cafes',
+    icon: '🍽️',
+    accentGradient: 'from-pink-400 to-orange-400',
     title: 'Restaurants & Cafes',
     tagline: 'Take orders where your customers already are — WhatsApp.',
     problem: [
@@ -105,7 +115,9 @@ export const INDUSTRIES: IndustryData[] = [
   },
   {
     slug: 'agri',
-    navLabel: 'Krishi Seva Kendra',
+    navLabel: 'Agri Input Dealers',
+    icon: '🌾',
+    accentGradient: 'from-emerald-400 to-teal-400',
     title: 'Krishi Seva Kendra & Agri Input Dealers',
     tagline: 'A catalog your farmers can browse and order from, in the language they already use to reach you.',
     problem: [
@@ -138,6 +150,8 @@ export const INDUSTRIES: IndustryData[] = [
   {
     slug: 'real-estate',
     navLabel: 'Real Estate',
+    icon: '🏠',
+    accentGradient: 'from-sky-400 to-blue-400',
     title: 'Real Estate Agents & Developers',
     tagline: 'A listing site that looks credible, and inquiries that don\'t fall through the cracks.',
     problem: [
@@ -169,7 +183,9 @@ export const INDUSTRIES: IndustryData[] = [
   },
   {
     slug: 'fitness',
-    navLabel: 'Fitness',
+    navLabel: 'Gyms & Fitness Studios',
+    icon: '💪',
+    accentGradient: 'from-pink-400 to-rose-400',
     title: 'Gyms & Fitness Studios',
     tagline: 'Know exactly who\'s due for renewal before they walk out the door for good.',
     problem: [
@@ -196,70 +212,6 @@ export const INDUSTRIES: IndustryData[] = [
       {
         q: 'Can it handle different membership tiers (basic, premium, personal training)?',
         a: 'Yes — the tracker is set up around whatever plan structure you actually offer, not a generic one-size-fits-all tier.',
-      },
-    ],
-  },
-  {
-    slug: 'events',
-    navLabel: 'Events',
-    title: 'Decorators, Caterers & Event Vendors',
-    tagline: 'A booking calendar that makes double-bookings physically impossible.',
-    problem: [
-      'Wedding season chaos usually comes down to one thing: bookings tracked across a phone diary, a paper notebook, and memory, with no single place showing every confirmed and tentative date at once. One missed clash between the diary and a verbal confirmation, and you\'ve accidentally committed the same date to two different clients — a mistake that\'s hard to recover from gracefully mid-season.',
-      'Inquiry volume during peak months adds to this: dozens of "are you free on this date" messages come in across calls, WhatsApp, and Instagram, and tracking which ones turned into confirmed bookings versus which went quiet becomes genuinely difficult to hold in your head past a certain volume.',
-    ],
-    build: [
-      'A booking calendar showing every confirmed and tentative date at a glance, so a new inquiry can be checked against your real availability in seconds',
-      'Built-in clash detection — the calendar itself stops you from confirming two bookings on the same date, rather than relying on you remembering to check',
-      'Inquiry tracking so every new lead is logged from first message through to confirmed booking, instead of scattered across WhatsApp and Instagram DMs',
-      'A simple way to mark a tentative hold as confirmed or released, so pending dates don\'t sit blocking your calendar indefinitely',
-    ],
-    process: [
-      'You share your current bookings for the upcoming season, however they\'re tracked right now',
-      'The calendar is set up with your real dates already loaded in, confirmed and tentative both',
-      'You test checking availability and adding a new booking yourself before peak season starts',
-      'From there, every new inquiry gets checked against the calendar in seconds instead of flipping through a diary',
-    ],
-    faq: [
-      {
-        q: 'Can multiple people on my team check the calendar at once?',
-        a: 'Yes — anyone on your team can check availability from their own phone, so you\'re not the only bottleneck for confirming a date.',
-      },
-      {
-        q: 'What about tentative holds that never get confirmed?',
-        a: 'You can set a hold with an expiry, so a tentative date automatically frees up if the client doesn\'t confirm within the window you set.',
-      },
-    ],
-  },
-  {
-    slug: 'repair-services',
-    navLabel: 'Repair Services',
-    title: 'Bike & Car Garages',
-    tagline: 'A full service history for every vehicle, and reminders that bring customers back.',
-    problem: [
-      'Without a service history on file, every repeat customer effectively starts from zero each visit — no record of what was done last time, what parts were replaced, or when the next service is actually due. That means either re-diagnosing from scratch or relying entirely on what the customer remembers, which isn\'t always accurate.',
-      'The bigger missed opportunity is repeat business: without a system tracking when a vehicle is due for its next service, that reminder simply never gets sent, and a customer who would have come back on schedule instead only returns once something breaks — often to whichever garage happens to be closest at that moment, not necessarily yours.',
-    ],
-    build: [
-      'A service-history tracker per vehicle — what was done, which parts were used, and by whom — searchable instantly by vehicle number',
-      'Automatic reminder notifications sent to the customer when their vehicle is due for its next scheduled service',
-      'Quick lookup at the counter so any technician, not just the one who remembers a particular customer, can pull up the full history in seconds',
-      'A simple record of parts and costs per job, useful for your own tracking as much as for the customer',
-    ],
-    process: [
-      'You share how you currently track service records, even if it\'s just memory and paper receipts right now',
-      'The tracker is set up around your actual service types and how you log a job today',
-      'You log a few real services through it to get comfortable with the flow',
-      'From there, reminders go out automatically and any staff member can pull up a vehicle\'s history in seconds',
-    ],
-    faq: [
-      {
-        q: 'What if a customer doesn\'t have WhatsApp?',
-        a: 'Reminders can also go out over SMS as a fallback, so it\'s not dependent on every customer using WhatsApp.',
-      },
-      {
-        q: 'Can I look up a vehicle\'s history even if it was serviced somewhere else last time?',
-        a: 'The history is only as complete as what\'s logged through this system — but from the point you start using it, every future visit builds a complete record, regardless of which technician handles it.',
       },
     ],
   },

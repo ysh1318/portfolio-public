@@ -4,12 +4,10 @@ import Home from './pages/Home'
 import Work from './pages/Work'
 import Process from './pages/Process'
 import FAQ from './pages/FAQ'
-import Pricing from './pages/Pricing'
 import Connect from './pages/Connect'
 import ServicesOverview from './pages/services/ServicesOverview'
 import ServicesWebsites from './pages/services/ServicesWebsites'
-import ServicesTestEngines from './pages/services/ServicesTestEngines'
-import ServicesManagementTools from './pages/services/ServicesManagementTools'
+import ServicesSoftwareTools from './pages/services/ServicesSoftwareTools'
 import IndustriesOverview from './pages/industries/IndustriesOverview'
 import IndustryPage from './pages/industries/IndustryPage'
 import Privacy from './pages/legal/Privacy'
@@ -28,15 +26,13 @@ export default function App() {
 
         <Route path="/services" element={<ServicesOverview />} />
         <Route path="/services/websites" element={<ServicesWebsites />} />
-        <Route path="/services/test-engines" element={<ServicesTestEngines />} />
-        <Route path="/services/management-tools" element={<ServicesManagementTools />} />
+        <Route path="/services/software-tools" element={<ServicesSoftwareTools />} />
 
         <Route path="/industries" element={<IndustriesOverview />} />
         <Route path="/industries/:slug" element={<IndustryPage />} />
 
         <Route path="/work" element={<Work />} />
         <Route path="/process" element={<Process />} />
-        <Route path="/pricing" element={<Pricing />} />
         <Route path="/faq" element={<FAQ />} />
 
         <Route path="/legal/privacy" element={<Privacy />} />

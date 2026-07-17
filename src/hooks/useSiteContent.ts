@@ -11,7 +11,7 @@ const FALLBACK: SiteContent = {
   heroSubtext:
     "I'm a self-taught, independent builder who ships fast — designing, building, and deploying production-ready applications end-to-end, solo.",
   servicesIntro:
-    'From business websites to exam-ready CBT engines to the tools that run your day-to-day — built and deployed end-to-end.',
+    'Whether you need a high-performance business website to build credibility and capture leads, or custom, full-stack software (like operational trackers, portals, and interactive assessment tools) to run your business.',
   industriesIntro:
     'A look at the kinds of businesses I build for, and the specific problems I solve for each.',
   processIntro: 'How an engagement goes from first message to a live, working product.',

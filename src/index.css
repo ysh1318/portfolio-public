@@ -4,9 +4,354 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #EBF2F9;
+  background: linear-gradient(135deg, #F4F8FC 0%, #E5ECF4 100%);
+  min-height: 100vh;
+  zoom: 0.68;
+}
+
+@media (min-width: 768px) {
+  body {
+    zoom: 1.1;
+  }
+}
+
+/* ---- Restored verbatim from the original single-page site ---- */
+
+.avatar-polygon {
+  background: linear-gradient(135deg, #FF769F 0%, #68B4FA 100%);
+  clip-path: polygon(30% 0%, 70% 0%, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0% 70%, 0% 30%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hero avatar + small icon-badge cutout — the softer 8-point blob used
+   across the original single-page hero and its service/process icons.
+   Kept distinct from .avatar-polygon (the crisp octagon reserved for
+   the Connect section) so the two profile treatments read as siblings,
+   not duplicates. */
+.avatar-clip {
+  clip-path: circle(50% at 50% 50%);
+}
+
+.shape-clip {
+  clip-path: circle(50% at 50% 50%);
+}
+
+/* ---- Decorative "blob" family ----
+   The colourful tilted shapes scattered behind cards are the site's visual
+   signature. Each one pairs a distinct silhouette with a fixed brand
+   gradient, so as SectionBlobs mixes and scatters them across the site the
+   result still reads as one consistent identity rather than random noise. */
+
+.shape-clip-1 {
+  background: linear-gradient(135deg, #F3A8CD 0%, #A55EEA 100%);
+  clip-path: polygon(25% 0%, 100% 20%, 80% 100%, 0% 80%);
+  opacity: 0.6;
+}
+
+.shape-clip-2 {
+  background: linear-gradient(135deg, #BACDF4 0%, #C084FC 100%);
+  clip-path: polygon(0% 20%, 80% 0%, 100% 80%, 20% 100%);
+  opacity: 0.5;
+}
+
+.shape-clip-3 {
+  background: linear-gradient(135deg, #7DD3FC 0%, #34D399 100%);
+  clip-path: polygon(20% 0%, 82% 6%, 100% 46%, 84% 100%, 14% 94%, 0% 40%);
+  opacity: 0.45;
+}
+
+.shape-clip-4 {
+  background: linear-gradient(135deg, #FBBF24 0%, #F472B6 100%);
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  opacity: 0.5;
+}
+
+.shape-clip-5 {
+  background: linear-gradient(135deg, #A78BFA 0%, #60A5FA 100%);
+  clip-path: polygon(8% 12%, 92% 0%, 100% 88%, 22% 100%);
+  opacity: 0.5;
+}
+
+.shape-clip-6 {
+  background: linear-gradient(135deg, #FB7185 0%, #FBBF24 100%);
+  clip-path: polygon(40% 0%, 100% 30%, 70% 100%, 0% 70%);
+  opacity: 0.55;
+}
+
+/* Slow, subtle drift so blobs feel alive rather than static stickers.
+   Each instance sets its own --blob-rot / --blob-dx / --blob-dy so the
+   same keyframes produce a different, seed-specific motion per blob. */
+@keyframes blob-float {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(var(--blob-rot, 0deg));
+  }
+  50% {
+    transform: translate(var(--blob-dx, 14px), var(--blob-dy, -18px))
+      rotate(calc(var(--blob-rot, 0deg) + 6deg));
+  }
+}
+
+.blob-float {
+  animation: blob-float var(--blob-duration, 18s) ease-in-out infinite;
+  animation-delay: var(--blob-delay, 0s);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob-float {
+    animation: none;
+  }
+}
+
+/* ---- Scroll reveal system (used by <Reveal>) ----
+   One shared mechanism for every slide-in/fade-in across the site,
+   instead of one-off animations per section. Direction variants set
+   the resting (hidden) transform; .reveal-visible clears it. */
+.reveal {
+  opacity: 0;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-up { transform: translateY(32px); }
+.reveal-down { transform: translateY(-32px); }
+.reveal-left { transform: translateX(-40px); }
+.reveal-right { transform: translateX(40px); }
+.reveal-fade { transform: none; }
+
+.reveal-visible {
+  opacity: 1;
+  transform: translate(0, 0);
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Decorative loop media (used by <LoopMedia>) ----
+   The placeholder state shown until a generated file is dropped into
+   /public/media matching the manifest — keeps every slot visible
+   and labeled during development instead of silently blank. */
+.media-placeholder {
+  background: linear-gradient(135deg, #F3A8CD 0%, #A55EEA 45%, #7DD3FC 100%);
+  background-size: 200% 200%;
+  animation: media-placeholder-shift 8s ease-in-out infinite;
+}
+
+@keyframes media-placeholder-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .media-placeholder { animation: none; }
+}
+
+.form-input {
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-size: 14px;
+  width: 100%;
+  background-color: #FAFAFA;
+}
+
+.form-input:focus {
+  outline: 2px solid #C084FC;
+}
+
+.gradient-btn {
+  background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+  transition: opacity 0.2s;
+}
+
+.gradient-btn:hover {
+  opacity: 0.9;
+}
+
+/* Vertical Timeline Interactive Glow Styles */
+.timeline-glow-container {
+  position: relative;
+  width: 100%;
+  padding-left: 2rem;
+}
+
+@media (min-width: 768px) {
+  .timeline-glow-container {
+    padding-left: 0;
+  }
+}
+
+.timeline-line-base {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #E2E8F0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.timeline-line-glow {
+  position: absolute;
+  top: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #FF7597, #A55EEA, #7DD3FC, #34D399);
+  border-radius: 9999px;
+  transition: height 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: 0 0 15px rgba(219, 39, 119, 0.4), 0 0 30px rgba(139, 92, 246, 0.2);
+}
+
+.timeline-line-glow::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 80px;
+  background: linear-gradient(to bottom, transparent, #FFFFFF);
+  animation: line-glow-pulse 2.5s ease-in-out infinite;
+}
+
+@keyframes line-glow-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Custom Frosted Glass Card */
+.glass-card-effect {
+  background-color: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.animate-marquee-left {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll-left 34s linear infinite;
+  will-change: transform;
+}
+
+@keyframes marquee-scroll-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Staggered Vertical Wave Oscillation (creates the snaking/curving effect) */
+.animate-snake-wave-1 {
+  animation: snake-wave-oscillate-1 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-snake-wave-2 {
+  animation: snake-wave-oscillate-2 4s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes snake-wave-oscillate-1 {
+  0%, 100% {
+    transform: translateY(-16px);
+  }
+  50% {
+    transform: translateY(16px);
+  }
+}
+
+@keyframes snake-wave-oscillate-2 {
+  0%, 100% {
+    transform: translateY(16px);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+/* Lenis Smooth Scroll Recommended Styles */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ============================================================
+   DEV MODE — zero GPU load
+   Remove the .dev-mode class from <body> (in main.tsx) before
+   building for production.
+   ============================================================ */
+body.dev-mode *,
+body.dev-mode *::before,
+body.dev-mode *::after {
+  animation: none !important;
+  transition: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  will-change: auto !important;
+}
+
+body.dev-mode {
+  background: #f0f0f0 !important;
+}
+
+body.dev-mode .shape-clip-1,
+body.dev-mode .shape-clip-2,
+body.dev-mode .shape-clip-3,
+body.dev-mode .shape-clip-4,
+body.dev-mode .shape-clip-5,
+body.dev-mode .shape-clip-6 {
+  background: #d1d5db !important;
+  opacity: 0.3 !important;
+}
+
+body.dev-mode .avatar-polygon {
+  background: #c084fc !important;
+}
+
+body.dev-mode .gradient-btn {
+  background: #6366f1 !important;
+}
+
+body.dev-mode .media-placeholder {
+  background: #e5e7eb !important;
+  animation: none !important;
+}
+
+body.dev-mode .timeline-line-glow {
+  background: #a78bfa !important;
+  box-shadow: none !important;
+}
+
+body.dev-mode .glass-card-effect {
+  background-color: rgba(255,255,255,0.8) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }

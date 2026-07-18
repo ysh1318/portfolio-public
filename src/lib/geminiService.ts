@@ -67,6 +67,14 @@ export interface GeminiTurn {
   parts: [{ text: string }]
 }
 
+// A minimal shape matching groqService's ChatMessage, kept local to avoid a
+// circular import between groqService.ts <-> geminiService.ts (they already
+// import from each other for the tour hand-off).
+interface HistoryTurn {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 // ── Log conversation to Firestore for future training data ────────────────────
 async function logConversationTurn(
   sessionId: string,
@@ -113,7 +121,19 @@ export async function sendToGemini(
   return { text: cleanText, navigateTo }
 }
 
-export async function getGeminiTour(userMessage: string, currentPath: string): Promise<any[]> {
+// NOTE: this used to be a single stateless model.generateContent(userMessage)
+// call — meaning every tour decision was made with ZERO memory of the
+// conversation. That's why a concrete first message like "show me the
+// services section" worked, but vague follow-ups like "tell me more" or
+// "what next" returned an empty/wrong tour: the model had no idea what
+// "more" referred to. Fix: seed a real chat session with the same rolling
+// `history` the Groq call already receives, so the nav model has the same
+// context as the conversational model.
+export async function getGeminiTour(
+  userMessage: string,
+  currentPath: string,
+  history: HistoryTurn[] = []
+): Promise<any[]> {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY
   if (!apiKey) return []
 
@@ -121,7 +141,7 @@ export async function getGeminiTour(userMessage: string, currentPath: string): P
     const genAI = new GoogleGenerativeAI(apiKey)
     const model = genAI.getGenerativeModel({
       model: 'gemini-2.0-flash-lite',
-      systemInstruction: `You are the navigation assistant for Yash's developer portfolio. Your ONLY job is to analyze the user's message and current page path, and decide if the website needs to navigate, scroll, or click to show them a section.
+      systemInstruction: `You are the navigation assistant for Yash's developer portfolio. Your ONLY job is to analyze the user's message — in light of the conversation so far — and the current page path, and decide if the website needs to navigate, scroll, or click to show them a section.
 You must output a raw JSON object containing a "tour" array representing the guided tour.
 Current path: ${currentPath}
 
@@ -141,13 +161,23 @@ Rules:
 - "say" is REQUIRED — a short pointer narration (under 12 words) for the bubble.
 - "click" is optional boolean.
 - Keep the tour short (1-3 steps).
+- Use the conversation history to resolve vague follow-ups like "tell me more", "what next", "show me that", or "go on" — pick up from whatever was just being discussed/shown, don't treat them as messages with no context.
 - If no navigation or action is needed, output: {"tour": []}
 - Your output MUST be ONLY the raw JSON object. Do not include markdown code fences, conversational preambles, or text outside the JSON.`,
     })
 
-    const result = await model.generateContent(userMessage)
+    // Seeded with the same rolling history the conversational (Groq) model
+    // sees, mapped to Gemini's role vocabulary ('assistant' -> 'model').
+    const chat = model.startChat({
+      history: history.map(h => ({
+        role: h.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: h.content }],
+      })),
+    })
+
+    const result = await chat.sendMessage(userMessage)
     const text = result.response.text().trim()
-    
+
     // Parse JSON
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (jsonMatch) {

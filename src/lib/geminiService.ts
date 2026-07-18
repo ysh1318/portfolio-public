@@ -57,7 +57,7 @@ IMPORTANT: Keep responses concise. Never write paragraphs. Think fast, reply sho
 
 // ── Conversation session ───────────────────────────────────────────────────────
 const model = genAI.getGenerativeModel({
-  model: 'gemini-2.0-flash-lite',
+  model: 'gemini-2.5-flash-lite',
   systemInstruction: SYSTEM_PROMPT,
 })
 
@@ -140,7 +140,7 @@ export async function getGeminiTour(
   try {
     const genAI = new GoogleGenerativeAI(apiKey)
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-lite',
+      model: 'gemini-2.5-flash-lite',
       systemInstruction: `You are the navigation assistant for Yash's developer portfolio. Your ONLY job is to analyze the user's message — in light of the conversation so far — and the current page path, and decide if the website needs to navigate, scroll, or click to show them a section.
 You must output a raw JSON object containing a "tour" array representing the guided tour.
 Current path: ${currentPath}
@@ -181,13 +181,30 @@ Rules:
     // Parse JSON
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (jsonMatch) {
-      const data = JSON.parse(jsonMatch[0])
-      if (Array.isArray(data.tour)) {
-        return data.tour
+      try {
+        const data = JSON.parse(jsonMatch[0])
+        if (Array.isArray(data.tour)) {
+          return data.tour
+        }
+      } catch (parseErr) {
+        console.warn('[Gemini Tour] Model replied but response was not valid tour JSON:', text)
       }
+    } else {
+      console.warn('[Gemini Tour] Model replied with no JSON block at all:', text)
     }
-  } catch (e) {
-    console.error('[Gemini Navigation Error]', e)
+  } catch (e: any) {
+    // Surface the actual cause instead of a raw error dump — the SDK error
+    // shape usually has a status/message that tells you exactly what's wrong.
+    const status = e?.status || e?.response?.status
+    if (status === 404) {
+      console.error('[Gemini Navigation Error] Model not found (404) — the model ID is likely stale/deprecated. Check the current free-tier model list.', e)
+    } else if (status === 401 || status === 403) {
+      console.error('[Gemini Navigation Error] Auth/permission error — VITE_GEMINI_API_KEY is missing, invalid, or restricted.', e)
+    } else if (status === 429) {
+      console.error('[Gemini Navigation Error] Rate limited (429) — free-tier quota exceeded for this project.', e)
+    } else {
+      console.error('[Gemini Navigation Error]', e)
+    }
   }
   return []
 }

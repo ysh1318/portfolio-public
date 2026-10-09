@@ -678,7 +678,7 @@ export const SITE_MAP: PageMap[] = [
         type: 'button',
         label: 'Send message icon',
         description: 'Launches chatbot query request.',
-        action: 'Sends input text to the Llama LLM chat system'
+        action: 'Sends input text to the Groq LLM chat system'
       }
     ]
   }

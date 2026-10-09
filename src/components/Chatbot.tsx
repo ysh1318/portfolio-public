@@ -139,7 +139,7 @@ export default function Chatbot() {
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider">
-                    Powered by Groq &amp; Llama
+                    Powered by Groq &amp; GPT-OSS
                   </span>
                 </div>
               </div>

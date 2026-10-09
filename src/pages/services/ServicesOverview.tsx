@@ -36,6 +36,15 @@ export default function ServicesOverview() {
         mediaObjectPosition="object-bottom"
         showAvailability={true}
       />
+      {/* Shared SVG clipPath for the smooth glassmorphism corner extension */}
+      <svg width="0" height="0" className="absolute pointer-events-none" aria-hidden="true">
+        <defs>
+          <clipPath id="smooth-glass-corner-clip" clipPathUnits="objectBoundingBox">
+            <path d="M 0 1 C 0.32 1, 0.58 0.12, 0.86 0.12 L 1 0.12 L 1 1 Z" />
+          </clipPath>
+        </defs>
+      </svg>
+
       <div id="services-pillars-grid" className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {PILLARS.map((p) => (
           <Reveal key={p.to} direction={p.direction} className="h-full">
@@ -49,6 +58,54 @@ export default function ServicesOverview() {
                       className="w-full h-full object-cover"
                       rounded="rounded-none"
                     />
+
+                    {/* Smooth Extended Glassmorphism Corner */}
+                    <div className="absolute bottom-0 right-0 w-[44%] sm:w-[38%] h-[36%] pointer-events-none z-10 overflow-hidden">
+                      {/* Frosted Glass Fill with Clip Path */}
+                      <div
+                        className="w-full h-full"
+                        style={{
+                          clipPath: 'url(#smooth-glass-corner-clip)',
+                          WebkitClipPath: 'url(#smooth-glass-corner-clip)',
+                          backgroundColor: 'rgba(255, 255, 255, 0.38)',
+                          backdropFilter: 'blur(24px) saturate(140%)',
+                          WebkitBackdropFilter: 'blur(24px) saturate(140%)',
+                        }}
+                      />
+                      {/* Subtle Ambient Light Gradient on the Glass */}
+                      <div
+                        className="absolute inset-0 bg-gradient-to-t from-white/30 via-white/15 to-transparent pointer-events-none"
+                        style={{
+                          clipPath: 'url(#smooth-glass-corner-clip)',
+                          WebkitClipPath: 'url(#smooth-glass-corner-clip)',
+                        }}
+                      />
+                      {/* Smooth Glass Edge Highlight & Shadow */}
+                      <svg
+                        className="absolute inset-0 w-full h-full pointer-events-none"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                      >
+                        {/* Soft subtle shadow beneath the glass edge */}
+                        <path
+                          d="M 0 100 C 32 100, 58 12, 86 12 L 100 12"
+                          fill="none"
+                          stroke="rgba(0, 0, 0, 0.12)"
+                          strokeWidth="2.5"
+                          vectorEffect="non-scaling-stroke"
+                          className="opacity-60"
+                        />
+                        {/* Crisp glowing white glass border line */}
+                        <path
+                          d="M 0 100 C 32 100, 58 12, 86 12 L 100 12"
+                          fill="none"
+                          stroke="rgba(255, 255, 255, 0.85)"
+                          strokeWidth="1.5"
+                          vectorEffect="non-scaling-stroke"
+                          className="group-hover:stroke-white transition-colors duration-300"
+                        />
+                      </svg>
+                    </div>
                   </div>
                   <div className="p-8 space-y-3">
                     <h2 className="text-lg font-bold text-slate-950 group-hover:text-indigo-600 transition-colors">{p.title}</h2>

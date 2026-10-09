@@ -112,7 +112,7 @@ async function logConversationTurn(sessionId: string, userMessage: string, botRe
       userMessage,
       botReply,
       timestamp: serverTimestamp(),
-      source: 'groq-llama-chatbot-v1',
+      source: 'groq-chatbot-v1',
     })
   } catch {
     // Silently fail — logging is non-blocking. (Requires a matching
@@ -165,10 +165,10 @@ export async function sendMessage(
     //    can be resolved against what was just discussed/shown — Gemini
     //    used to get only the single latest message with no context.
     tourPromise = getGeminiTour(userMessage, currentPath, history)
-    // 2. Tell Llama to focus purely on conversation and omit all JSON output
+    // 2. Tell Groq to focus purely on conversation and omit all JSON output
     systemPromptContent += `\n\n[SYSTEM DIRECTIVE: Another dedicated LLM handles website navigation and tours. Do NOT generate any "tour" JSON block, and do NOT use markdown code blocks for JSON. Focus 100% of your tokens on a friendly, conversational text reply.]`
   } else {
-    // Fallback: Local intent neural prediction + hint Llama to output JSON
+    // Fallback: Local intent neural prediction + hint model to output JSON
     const prediction = predictIntent(userMessage)
     if (prediction.intent === 'NAVIGATE' && prediction.navTarget) {
       const targetPath = prediction.navTarget
@@ -182,17 +182,17 @@ export async function sendMessage(
     }
   }
 
-  // Call Llama on Groq
+  // Call Groq
   const groq = getGroqClient()
   const responsePromise = groq.chat.completions.create({
-    model: 'llama-3.1-8b-instant',
+    model: 'openai/gpt-oss-20b',
     messages: [
       { role: 'system', content: systemPromptContent },
       ...history,
       { role: 'user', content: userMessage },
     ],
     temperature: 0.85,
-    max_tokens: 500,
+    max_tokens: 800,
   })
 
   // Await responses
@@ -203,10 +203,10 @@ export async function sendMessage(
   let tour: TourStep[] = []
   let rawSteps: any[] = []
 
-  // Parse tour steps (either from Gemini or Llama fallback)
+  // Parse tour steps (either from Gemini or Groq fallback)
   if (isGeminiAvailable) {
     rawSteps = rawGeminiSteps
-    // Strip any stray JSON blocks Llama might have still outputted
+    // Strip any stray JSON blocks that might have still been outputted
     const jsonMatch = rawText.match(/(?:```json\s*|```\s*)?(\{[\s\S]*?\})(?=\s*```?\s*$|\s*$)/)
     if (jsonMatch) {
       cleanText = rawText.replace(jsonMatch[0], '').trim()

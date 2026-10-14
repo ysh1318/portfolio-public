@@ -102,8 +102,8 @@ export default function Header() {
           content, but no longer scrolls off-screen with the page. */}
       <header
         id="global-header"
-        className={`sticky top-3 md:top-4 z-40 w-full max-w-6xl mx-auto flex xl:grid xl:grid-cols-[1fr_auto_1fr] items-center justify-between gap-1 px-3 sm:px-6 py-3 sm:py-4 bg-white/85 backdrop-blur-3xl border border-white/80 rounded-full transition-shadow ${
-          scrolled ? 'shadow-xl shadow-slate-300/50' : 'shadow-lg shadow-slate-200/40'
+        className={`sticky top-3 md:top-4 z-40 w-full max-w-6xl mx-auto flex xl:grid xl:grid-cols-[1fr_auto_1fr] items-center justify-between gap-1 px-3 sm:px-6 py-3 sm:py-4 bg-white/70 backdrop-blur-2xl border border-white/80 rounded-full transition-all ${
+          scrolled ? 'shadow-xl shadow-slate-300/40 bg-white/80' : 'shadow-lg shadow-slate-200/30'
         }`}
       >
         <div className="flex items-center gap-3 min-w-0 xl:justify-self-start">

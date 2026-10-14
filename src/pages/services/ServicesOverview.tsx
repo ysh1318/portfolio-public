@@ -32,8 +32,6 @@ export default function ServicesOverview() {
         eyebrow="Services"
         title="Two ways I can help your business"
         subtitle={content.servicesIntro}
-        mediaSlot={MEDIA.servicesOverviewHeroBg}
-        mediaObjectPosition="object-bottom"
         showAvailability={true}
       />
       {/* Shared SVG clipPath for the smooth glassmorphism corner extension */}

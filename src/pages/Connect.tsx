@@ -123,20 +123,15 @@ export default function Connect() {
             </div>
           </div>
 
-          <div id="connect-socials-card" className="space-y-3 bg-slate-50 border border-slate-100 p-5 rounded-2xl shadow-inner relative overflow-hidden">
-            <LoopMedia
-              slot={MEDIA.connectAccent('social')}
-              className="absolute -bottom-2 -right-2 w-14 h-14 pointer-events-none"
-              opacity={0.4}
-            />
-            <span className="text-[10px] font-black tracking-widest uppercase text-slate-400 font-mono block relative z-10">Social Channels</span>
+          <div id="connect-socials-card" className="space-y-3 glass-card-effect border border-white/60 p-5 rounded-2xl shadow-sm relative overflow-hidden">
+            <span className="text-[10px] font-black tracking-widest uppercase text-slate-500 font-mono block relative z-10">Social Channels</span>
             <div className="grid grid-cols-2 gap-3 relative z-10">
               <a
                 id="connect-github-link"
                 href="https://github.com/ysh1318"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-xl hover:bg-slate-950 hover:text-white transition font-bold text-sm text-slate-700 shadow-sm"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-white/80 border border-slate-200/80 rounded-xl hover:bg-slate-950 hover:text-white transition font-bold text-sm text-slate-700 shadow-sm"
               >
                 GitHub
               </a>
@@ -145,19 +140,14 @@ export default function Connect() {
                 href="https://instagram.com/yash_d.awachar"
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-xl hover:bg-gradient-to-tr hover:from-amber-500 hover:via-pink-500 hover:to-purple-600 hover:text-white hover:border-transparent transition font-bold text-sm text-slate-700 shadow-sm"
+                className="flex items-center justify-center gap-2 px-4 py-3 bg-white/80 border border-slate-200/80 rounded-xl hover:bg-gradient-to-tr hover:from-amber-500 hover:via-pink-500 hover:to-purple-600 hover:text-white hover:border-transparent transition font-bold text-sm text-slate-700 shadow-sm"
               >
                 Instagram
               </a>
             </div>
           </div>
 
-          <div id="connect-whatsapp-direct-card" className="glass-card-effect border border-[#25D366]/20 rounded-2xl p-5 flex items-center justify-between gap-4 shadow-sm relative overflow-hidden">
-            <LoopMedia
-              slot={MEDIA.connectAccent('chat')}
-              className="absolute -bottom-2 -right-2 w-14 h-14 pointer-events-none"
-              opacity={0.4}
-            />
+          <div id="connect-whatsapp-direct-card" className="glass-card-effect border border-[#25D366]/30 rounded-2xl p-5 flex items-center justify-between gap-4 shadow-sm relative overflow-hidden">
             <div className="flex items-center gap-3 relative z-10">
               <div className="space-y-0.5">
                 <span className="text-xs font-black uppercase text-slate-950 tracking-wider">Chat Directly</span>

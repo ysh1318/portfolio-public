@@ -14,8 +14,6 @@ export default function Work() {
         eyebrow="Work"
         title="Completed projects"
         subtitle="A collection of web applications and sites built for various clients."
-        mediaSlot={MEDIA.workHeroBg}
-        mediaObjectPosition="object-bottom"
         showAvailability={true}
       />
 
@@ -30,10 +28,11 @@ export default function Work() {
       {!loading && projects.length > 0 && (
         <section id="work-projects-list" className="relative overflow-hidden glass-card-effect rounded-[2.5rem] shadow-2xl shadow-slate-900/10 p-6 md:p-10">
 
-
           <header className="relative z-10 flex items-center justify-between border-b border-slate-200/60 pb-6 mb-8">
             <div className="flex items-center gap-4">
-              <LoopMedia slot={MEDIA.workHeaderAccent} className="w-10 h-10 hidden sm:block" rounded="rounded-xl" />
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 hidden sm:flex items-center justify-center text-white text-base shadow-md shadow-indigo-500/20">
+                ✦
+              </div>
               <div>
                 <span className="text-[11px] font-black tracking-widest uppercase text-indigo-600 font-mono">
                   Portfolio

@@ -34,12 +34,6 @@ function WhatsAppIcon() {
 export default function Footer() {
   return (
     <footer id="global-footer" className="w-full max-w-6xl mx-auto px-8 py-8 glass-card-effect rounded-[2.5rem] shadow-2xl shadow-slate-900/10 text-sm text-slate-700 relative z-10 overflow-hidden my-8">
-      <LoopMedia
-        slot={MEDIA.footerAccent}
-        className="absolute bottom-0 right-0 w-40 pointer-events-none"
-        rounded="rounded-none"
-        opacity={0.1}
-      />
       <div className="relative flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-bold uppercase tracking-wider">
           <Link to="/" className="hover:text-slate-950 transition">Home</Link>

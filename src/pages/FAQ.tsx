@@ -39,20 +39,11 @@ export default function FAQ() {
 
   return (
     <>
-      <LoopMedia
-        slot={MEDIA.faqPageBg}
-        aspect="aspect-auto"
-        className="fixed inset-0 w-full h-full -z-10 pointer-events-none"
-        rounded="rounded-none"
-        opacity={0.08}
-      />
       <PageHero
         id="faq-hero"
         eyebrow="FAQ"
         title="Common questions"
         subtitle="If something isn't covered here, just ask directly."
-        mediaSlot={MEDIA.faqHeroBg}
-        mediaObjectPosition="object-bottom"
       />
 
       <div id="faq-list" className="space-y-4">

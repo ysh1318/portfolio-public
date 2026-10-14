@@ -184,7 +184,20 @@ export function PageHero({
 }) {
   const hasMedia = !!mediaSlot
   return (
-    <GlassCard id={id} className="relative overflow-hidden px-8 md:px-14 py-10 md:py-12 space-y-4">
+    <GlassCard id={id} className="relative overflow-hidden px-8 md:px-14 py-10 md:py-14 space-y-5">
+      {/* Top bevel highlight line */}
+      <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/90 to-transparent pointer-events-none z-10" />
+
+      {/* Decorative ambient aurora glows in place of video loops */}
+      {!hasMedia && (
+        <>
+          <div className="absolute -top-20 -right-20 w-80 md:w-96 h-80 md:h-96 rounded-full bg-gradient-to-br from-indigo-400/20 via-purple-400/18 to-pink-400/15 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 w-72 md:w-80 h-72 md:h-80 rounded-full bg-gradient-to-tr from-sky-400/15 via-indigo-400/10 to-transparent blur-3xl pointer-events-none" />
+          <div className="absolute top-8 right-12 text-indigo-400/30 text-2xl font-light select-none pointer-events-none hidden sm:block">✦</div>
+          <div className="absolute bottom-8 right-28 text-pink-400/25 text-lg font-light select-none pointer-events-none hidden sm:block">✦</div>
+        </>
+      )}
+
       {mediaSlot && (
         <LoopMedia
           slot={mediaSlot}
@@ -197,7 +210,6 @@ export function PageHero({
         />
       )}
 
-      
       <div className="relative z-10 flex items-center justify-between gap-4 w-full flex-wrap">
         <div className="flex items-center gap-4">
           {icon && (
@@ -213,11 +225,9 @@ export function PageHero({
         {showAvailability && <AvailabilityBadge darkBg={hasMedia} />}
       </div>
 
-      {/* No background screen, just high-contrast white text with premium drop shadows
-          matching the Home page hero design system */}
       <div className="relative z-10 space-y-3">
         <h1
-          className={`text-3xl md:text-5xl font-extrabold tracking-tight leading-[1.12] max-w-3xl ${
+          className={`text-3xl md:text-5xl font-black tracking-tight leading-[1.12] max-w-3xl ${
             hasMedia
               ? 'text-white drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)]'
               : 'text-slate-950'
@@ -227,10 +237,10 @@ export function PageHero({
         </h1>
         {subtitle && (
           <p
-            className={`text-sm md:text-base leading-relaxed font-semibold max-w-2xl ${
+            className={`text-sm md:text-base leading-relaxed max-w-2xl ${
               hasMedia
-                ? 'text-slate-100 drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]'
-                : 'text-slate-700'
+                ? 'text-slate-100 font-semibold drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]'
+                : 'text-slate-600 font-medium'
             }`}
           >
             {subtitle}

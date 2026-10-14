@@ -107,7 +107,6 @@ export default function Process() {
         eyebrow="Process"
         title="How an engagement actually goes"
         subtitle={content.processIntro}
-        mediaSlot={MEDIA.processHeroBg}
       />
 
       <div ref={containerRef} id="process-timeline" className="timeline-glow-container max-w-3xl mx-auto my-16 select-none md:select-text relative pl-12 md:pl-20">

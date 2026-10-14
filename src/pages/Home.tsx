@@ -98,41 +98,37 @@ export default function Home() {
         </Reveal>
       </GlassCard>
 
-      <div id="home-tech-belt" className="relative flex items-center w-full my-4 overflow-hidden h-24">
-        <LoopMedia
-          slot={MEDIA.homeDivider1}
-          aspect="aspect-auto"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+      <div
+        id="home-tech-belt"
+        className="relative w-screen left-1/2 -translate-x-1/2 flex items-center overflow-hidden h-32 sm:h-36 my-2 [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
+      >
         {/* Infinite Moving Belt (Right to Left) with Snaking/Waving Badges */}
-        <div className="absolute inset-0 z-10 flex items-center overflow-hidden">
-          <div className="animate-marquee-left flex gap-4 pr-4">
-            <div className="flex gap-4 flex-shrink-0 items-center h-full">
-              {TECH_1.map((t, idx) => (
-                <div
-                  key={idx}
-                  className="animate-snake-wave-1 bg-white/70 backdrop-blur-md border border-white/80 rounded-full px-5 py-2 md:px-6 md:py-2.5 shadow-sm text-[9px] md:text-[10px] font-black tracking-widest uppercase text-slate-800 font-mono"
-                  style={{
-                    animationDelay: `${-idx * 0.3}s`,
-                  }}
-                >
-                  {t}
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-4 flex-shrink-0 items-center h-full" aria-hidden="true">
-              {TECH_1.map((t, idx) => (
-                <div
-                  key={`dup-${idx}`}
-                  className="animate-snake-wave-1 bg-white/70 backdrop-blur-md border border-white/80 rounded-full px-5 py-2 md:px-6 md:py-2.5 shadow-sm text-[9px] md:text-[10px] font-black tracking-widest uppercase text-slate-800 font-mono"
-                  style={{
-                    animationDelay: `${-idx * 0.3}s`,
-                  }}
-                >
-                  {t}
-                </div>
-              ))}
-            </div>
+        <div className="animate-marquee-left flex gap-4 pr-4 items-center">
+          <div className="flex gap-4 flex-shrink-0 items-center py-6">
+            {[...TECH_1, ...TECH_1].map((t, idx) => (
+              <div
+                key={idx}
+                className="animate-snake-wave-1 bg-white/70 backdrop-blur-md border border-white/80 rounded-full px-5 py-2 md:px-6 md:py-2.5 shadow-sm text-[9px] md:text-[10px] font-black tracking-widest uppercase text-slate-800 font-mono"
+                style={{
+                  animationDelay: `${-idx * 0.3}s`,
+                }}
+              >
+                {t}
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-4 flex-shrink-0 items-center py-6" aria-hidden="true">
+            {[...TECH_1, ...TECH_1].map((t, idx) => (
+              <div
+                key={`dup-${idx}`}
+                className="animate-snake-wave-1 bg-white/70 backdrop-blur-md border border-white/80 rounded-full px-5 py-2 md:px-6 md:py-2.5 shadow-sm text-[9px] md:text-[10px] font-black tracking-widest uppercase text-slate-800 font-mono"
+                style={{
+                  animationDelay: `${-idx * 0.3}s`,
+                }}
+              >
+                {t}
+              </div>
+            ))}
           </div>
         </div>
       </div>
@@ -224,41 +220,37 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="relative flex items-center w-full my-4 overflow-hidden h-24">
-        <LoopMedia
-          slot={MEDIA.homeDivider2}
-          aspect="aspect-auto"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
+      <div
+        id="home-tech-belt-2"
+        className="relative w-screen left-1/2 -translate-x-1/2 flex items-center overflow-hidden h-32 sm:h-36 my-2 [mask-image:linear-gradient(to_right,transparent,black_4%,black_96%,transparent)]"
+      >
         {/* Infinite Moving Belt (Right to Left) with Snaking/Waving Badges */}
-        <div className="absolute inset-0 z-10 flex items-center overflow-hidden">
-          <div className="animate-marquee-left flex gap-4 pr-4">
-            <div className="flex gap-4 flex-shrink-0 items-center h-full">
-              {TECH_2.map((t, idx) => (
-                <div
-                  key={idx}
-                  className="animate-snake-wave-2 bg-white/70 backdrop-blur-md border border-white/80 rounded-full px-5 py-2 md:px-6 md:py-2.5 shadow-sm text-[9px] md:text-[10px] font-black tracking-widest uppercase text-slate-800 font-mono"
-                  style={{
-                    animationDelay: `${-idx * 0.3}s`,
-                  }}
-                >
-                  {t}
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-4 flex-shrink-0 items-center h-full" aria-hidden="true">
-              {TECH_2.map((t, idx) => (
-                <div
-                  key={`dup-${idx}`}
-                  className="animate-snake-wave-2 bg-white/70 backdrop-blur-md border border-white/80 rounded-full px-5 py-2 md:px-6 md:py-2.5 shadow-sm text-[9px] md:text-[10px] font-black tracking-widest uppercase text-slate-800 font-mono"
-                  style={{
-                    animationDelay: `${-idx * 0.3}s`,
-                  }}
-                >
-                  {t}
-                </div>
-              ))}
-            </div>
+        <div className="animate-marquee-left flex gap-4 pr-4 items-center">
+          <div className="flex gap-4 flex-shrink-0 items-center py-6">
+            {[...TECH_2, ...TECH_2].map((t, idx) => (
+              <div
+                key={idx}
+                className="animate-snake-wave-2 bg-white/70 backdrop-blur-md border border-white/80 rounded-full px-5 py-2 md:px-6 md:py-2.5 shadow-sm text-[9px] md:text-[10px] font-black tracking-widest uppercase text-slate-800 font-mono"
+                style={{
+                  animationDelay: `${-idx * 0.3}s`,
+                }}
+              >
+                {t}
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-4 flex-shrink-0 items-center py-6" aria-hidden="true">
+            {[...TECH_2, ...TECH_2].map((t, idx) => (
+              <div
+                key={`dup-${idx}`}
+                className="animate-snake-wave-2 bg-white/70 backdrop-blur-md border border-white/80 rounded-full px-5 py-2 md:px-6 md:py-2.5 shadow-sm text-[9px] md:text-[10px] font-black tracking-widest uppercase text-slate-800 font-mono"
+                style={{
+                  animationDelay: `${-idx * 0.3}s`,
+                }}
+              >
+                {t}
+              </div>
+            ))}
           </div>
         </div>
       </div>

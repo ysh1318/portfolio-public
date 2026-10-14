@@ -5,9 +5,8 @@ import Header from './Header'
 import Footer from './Footer'
 import AvailabilityBanner from './AvailabilityBanner'
 import ScrollToTop from './ScrollToTop'
-import LoopMedia from './LoopMedia'
+import LiquidCanvas from './LiquidCanvas'
 import VirtualCursor from './VirtualCursor'
-import { MEDIA } from '../lib/media'
 
 const Chatbot = lazy(() => import('./Chatbot'))
 
@@ -38,14 +37,7 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen relative overflow-x-hidden text-slate-900 p-3 sm:p-4 md:p-8 space-y-6 sm:space-y-10 selection:bg-pink-500 selection:text-white">
-      <LoopMedia
-        slot={MEDIA.globalBackground}
-        aspect="aspect-auto"
-        className="fixed inset-0 w-full h-full -z-10 pointer-events-none"
-        rounded="rounded-none"
-        opacity={0.80}
-        crossfadeDuration={1}
-      />
+      <LiquidCanvas />
       <Header />
       <AvailabilityBanner />
       <main className="w-full max-w-6xl mx-auto relative z-10 space-y-16 sm:space-y-24">
